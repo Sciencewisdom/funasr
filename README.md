@@ -29,11 +29,12 @@
 ```
 funasr/
 ├── 🎵 音频分割工具
-│   ├── ffmpeg_split.bat          # FFmpeg分割批处理
+│   ├── ffmpeg_split.bat          # FFmpeg音频分割
 │   └── ffmpeg_split_audio.py     # 核心分割脚本
 ├── 📤 FunASR转录工具
 │   ├── run_transcription_local.py    # Plan B: 临时文件托管转录
 │   ├── upload_split_files.py         # 分割文件批量转录
+│   ├── upload_split.bat              # 批量上传转录脚本
 │   ├── funasr_transcriber.py         # 通用FunASR转录器
 │   └── start.bat                     # Plan A: 本地服务器转录
 ├── ⚙️ 配置工具
@@ -63,7 +64,7 @@ funasr/
 - 🚀 **异步处理**：支持大文件异步转录
 
 ### 🛠️ 易用性
-- 📋 **一键操作**：批处理脚本，开箱即用
+- 📋 **一键操作**：双击bat文件即可执行
 - 📊 **进度显示**：实时显示处理进度
 - 🎯 **智能跳过**：避免重复处理
 - 📄 **文档完善**：详细的使用说明
@@ -92,10 +93,23 @@ funasr/
 
 ### 基础使用
 
-#### 🎵 音频分割
+#### 🎯 最简使用（三步搞定）
+
+##### 步骤1：音频分割+创建txt
 ```bash
-# 一键分割所有音频文件
-ffmpeg_split.bat
+双击: ffmpeg_split.bat
+```
+🎯 **自动完成**：创建空白txt + FFmpeg流式分割音频文件
+
+##### 步骤2：批量转录
+```bash
+双击: upload_split.bat
+```
+🎯 **自动完成**：上传 + FunASR转录 + 保存结果
+
+##### 步骤3：查看结果
+```bash
+转录结果自动保存到对应的txt文件中
 ```
 
 #### 📤 FunASR转录处理
@@ -122,16 +136,64 @@ python run_transcription_local.py  # 修改为使用OSS
 python run_transcription_local.py
 
 # 转录分割后的文件
-upload_split.bat
+python run_transcription_local.py  # 自动处理split_audio目录中的文件
 ```
 
 ##### 🔧 本地方案：Plan A (Ngrok)
 ```bash
 # 启动本地服务器和ngrok
-start.bat
+double-click: start.bat
 ```
 
 ## 📖 使用指南
+
+### 🛠️ 批处理工具详解
+
+#### 🎵 ffmpeg_split.bat - 音频分割
+```bash
+双击运行: ffmpeg_split.bat
+```
+**功能**：
+- ✅ 自动扫描 `asr.txt` 中的音频文件
+- ✅ 为每个音频文件创建对应的空白txt文件
+- ✅ 执行FFmpeg流式分割（50MB分片）
+- ✅ 清理旧的分割文件
+- ✅ 智能分片处理
+
+**适用场景**：完整的音频处理流程（创建txt + 分割）
+
+#### 📤 upload_split.bat - 批量转录
+```bash
+双击运行: upload_split.bat
+```
+**功能**：
+- ✅ 上传分割后的音频文件到临时托管服务
+- ✅ 调用FunASR API进行转录
+- ✅ 自动保存转录结果到txt文件
+- ✅ 支持多服务并发上传
+
+**适用场景**：已完成分割，需要进行批量转录
+
+#### 🚀 start.bat - 本地服务器转录
+```bash
+双击运行: start.bat
+```
+**功能**：
+- ✅ 启动本地HTTP服务器（端口8000）
+- ✅ 启动ngrok创建公网访问
+- ✅ 自动转录原始音频文件（不分割）
+- ✅ 适用于小文件快速转录
+
+**适用场景**：Plan A方案，内网环境临时转录
+
+#### 📊 工具功能对比
+
+| 工具文件 | 主要功能 | 创建txt | 音频分割 | 转录功能 | 适用场景 |
+|----------|----------|---------|----------|----------|----------|
+| **[`ffmpeg_split.bat`](ffmpeg_split.bat)** | 🎵 音频分割+创建txt | ✅ | ✅ | ❌ | 完整音频处理流程 |
+| **[`upload_split.bat`](upload_split.bat)** | 📤 批量转录 | ❌ | ❌ | ✅ | 分割文件转录 |
+| **[`start.bat`](start.bat)** | 🚀 Plan A转录 | ❌ | ❌ | ✅ | 小文件快速转录 |
+| **`run_transcription_local.py`** | 📤 Plan B/C转录 | ❌ | ❌ | ✅ | 分割文件批量转录 |
 
 ### 🎵 音频分割详解
 
